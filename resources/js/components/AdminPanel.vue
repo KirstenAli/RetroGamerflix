@@ -1,0 +1,53 @@
+<script>
+import UploadForm from "@/components/UploadForm.vue";
+import GameTable from "@/components/GameTable.vue";
+import * as utils from "../utils.js";
+export default {
+    name: "AdminPanel",
+    components: {GameTable, UploadForm},
+    data(){
+        return{
+            games:[],
+            newGame: {}
+        }
+    },
+    methods:{
+
+    },
+
+    async mounted() {
+        this.games = await utils.fetchJSON('/game/all');
+    }
+}
+</script>
+
+<template>
+    <div class="container mt-5 mb-5">
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Add New Game
+                        </button>
+                    </h2>
+                </div>
+
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="card-body padding">
+                        <upload-form :game="newGame"></upload-form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <game-table :games="games"></game-table>
+    </div>
+
+</template>
+
+<style scoped>
+.btn-link{
+    color: #e50914;
+}
+</style>
