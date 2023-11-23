@@ -1,10 +1,24 @@
 <script>
 import UploadForm from "@/components/UploadForm.vue";
+import {initModal} from "../utils.js";
 
+let deleteModal;
 export default {
     name: "EditGame",
     components: {UploadForm},
-    props:['game']
+    props:['game', 'genres'],
+    methods:{
+        postEvent(game){
+            this.$emit('post-event', game);
+        },
+
+        showDeleteModal(){
+            deleteModal.show();
+        }
+    },
+    mounted() {
+        deleteModal = initModal('deleteModal');
+    }
 }
 </script>
 
@@ -17,15 +31,16 @@ export default {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <upload-form :game="game"></upload-form>
+                    <upload-form :game="game" :genres="genres" formName="editForm" url="/admin/game/update" @post-event="postEvent"></upload-form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-danger" @click="showDeleteModal">Delete</button>
                 </div>
             </div>
         </div>
     </div>
+
 </template>
 
 <style scoped>

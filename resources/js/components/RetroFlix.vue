@@ -36,13 +36,14 @@ export default {
         },
 
         async addToCategory(game, tracker, categoryName, categories, endpoint) {
-            const response = await utils.sendData(endpoint, 'PUT');
+            const response = await utils.sendData(endpoint, 'PUT', false);
 
-            if (response) {
+            if(!tracker.has(game.id) && response) {
+
                 const gameChunks = categories.get(categoryName);
-                const lastChunk = gameChunks[gameChunks.length-1];
+                const lastChunk = gameChunks[gameChunks.length - 1];
 
-                if(lastChunk && lastChunk.length <3)
+                if (lastChunk && lastChunk.length < 3)
                     lastChunk.push(game);
                 else
                     gameChunks.push([game]);
@@ -60,18 +61,17 @@ export default {
         },
 
         async removeFromCategory(game, tracker, categories, categoryName, endpoint){
+            const response = await utils.sendData(endpoint, 'DELETE', false);
 
-            const response = await utils.sendData(endpoint, 'DELETE');
-
-            if (response) {
+            if(response) {
                 const location = tracker.get(game.id);
                 const favChunks = categories.get(categoryName);
                 const favChunk = favChunks[location[0]];
 
-                if(favChunk.length<=1) {
+                if (favChunk.length <= 1) {
                     prevCarousel(categoryName);
                     favChunks.pop();
-                } else{
+                } else {
                     favChunk.splice(location[1], 1);
                 }
 

@@ -20,6 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// named routes
 Route::middleware(['auth'])->prefix('/game')->group(function () {
     Route::get('/all', [GameController::class, 'getAll']);
     Route::get('/favorites', [GameController::class, 'getFavorites']);
@@ -32,13 +33,15 @@ Route::middleware(['auth'])->prefix('/game')->group(function () {
     Route::get('/contain/{str}', [GameController::class, 'getAllGamesContain']);
     Route::get('/thumbnail/{game}', [GameController::class, 'getThumbnail']);
     Route::get('/index', [GameController::class, 'index']);
-    Route::get('/adminPanel', [AdminGameController::class, 'adminPanel']);
+    Route::get('/playGame/{game}', [GameController::class, 'playGame']);
 });
 
 Route::middleware(['auth', 'admin'])->prefix('/admin/game')->group(function () {
+    Route::get('/adminPanel', [AdminGameController::class, 'adminPanel']);
     Route::post('/store', [AdminGameController::class, 'store']);
-    Route::put('/update', [AdminGameController::class, 'update']);
+    Route::post('/update', [AdminGameController::class, 'update']);
     Route::delete('/destroy/{game}', [AdminGameController::class, 'destroy']);
+    Route::get('/genres', [AdminGameController::class, 'getGenres']);
 });
 
 Auth::routes();

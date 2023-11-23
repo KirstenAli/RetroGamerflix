@@ -1,21 +1,42 @@
 <script>
 import EditGame from "@/components/EditGame.vue";
+import {initModal} from "../utils.js";
+
+let editModal;
 
 export default {
     name: "GameTable",
     components: {EditGame},
-    props:['games'],
+    emits: ['delete-event'],
+    props:['games', 'genres'],
     data(){
         return{
-            game: {}
+            game: {},
+            gamePos:0
         }
     },
     methods:{
-        setGame(game){
+        setGame(game,pos){
             this.game = game;
+            this.gamePos = pos;
+            editModal.show();
+        },
+
+        updateGame(game){
+            this.game.rom = game.rom;
+            this.game.thumbnail = game.thumbnail;
+        },
+
+        deleteEvent(){
+            this.$emit('delete-event', this.gamePos);
         }
     },
+
+    mounted() {
+        editModal = initModal('editGameModal');
+    }
 }
+
 </script>
 
 <template>
@@ -36,22 +57,23 @@ export default {
                 </thead>
                 <tbody>
                 <!-- Display game details in rows -->
-                <tr v-for="game in games">
+                <tr v-for="(game, index) in games">
                     <td>{{game.id}}</td>
                     <td>{{game.genre}}</td>
                     <td>{{game.description}}</td>
                     <td><img :src="`/game/thumbnail/${game.id}`" alt="" width="50"></td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm netflix-btn" data-bs-toggle="modal" data-bs-target="#editGameModal" @click="setGame(game)">Edit</button>
+                        <button type="button" class="btn btn-primary btn-sm netflix-btn" @click="setGame(game, index)">Edit</button>
                     </td>
                 </tr>
-                <!-- Add more rows dynamically for each game -->
+
                 </tbody>
             </table>
         </div>
     </div>
 
-    <edit-game :game="game"></edit-game>
+    <edit-game :game="game" @post-event="updateGame" :genres="genres"></edit-game>
+    <delete @delete-event="deleteEvent"></delete>
 </template>
 
 <style scoped>

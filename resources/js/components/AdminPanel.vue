@@ -8,17 +8,32 @@ export default {
     data(){
         return{
             games:[],
-            newGame: {}
+            newGame: {id:0},
+            genres:[]
         }
     },
-    methods:{
 
+    methods:{
+        addNewGame(game){
+            this.games.push(game);
+        },
+
+        async deleteGame(gamePos) {
+            const gameId = this.games[gamePos].id;
+
+            let response = await utils.sendData(`/admin/game/destroy/${gameId}`, 'DELETE', true);
+
+            if(response)
+                this.games.splice(gamePos, 1);
+        }
     },
 
     async mounted() {
         this.games = await utils.fetchJSON('/game/all');
-    }
+        this.genres = await utils.fetchJSON('/admin/game/genres');
+    },
 }
+
 </script>
 
 <template>
@@ -35,13 +50,14 @@ export default {
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="card-body padding">
-                        <upload-form :game="newGame"></upload-form>
+                        <upload-form @post-event="addNewGame" :game="newGame" :genres="genres" formName="addForm" url="/admin/game/store"></upload-form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <game-table :games="games"></game-table>
+        <game-table :games="games" :genres="genres" @delete-event="deleteGame"></game-table>
+
     </div>
 
 </template>

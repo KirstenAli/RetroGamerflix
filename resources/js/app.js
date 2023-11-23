@@ -8,7 +8,7 @@ import GameCard from "./components/GameCard.vue";
 import RetroFlix from "./components/RetroFlix.vue";
 
 import UploadForm from "./components/UploadForm.vue";
-import Message from "./components/Message.vue";
+import Delete from "./components/Delete.vue";
 import GameTable from "./components/GameTable.vue";
 import AdminPanel from "./components/AdminPanel.vue";
 
@@ -18,7 +18,7 @@ app.component('category-component', Category);
 app.component('game-component', GameCard);
 
 app.component('upload-form', UploadForm);
-app.component('message', Message);
+app.component('delete', Delete);
 app.component('game-table', GameTable);
 app.component('admin-panel', AdminPanel);
 

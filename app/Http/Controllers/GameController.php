@@ -83,6 +83,10 @@ class GameController extends Controller
         return response()->file(Storage::disk('public')->path($field.'s/'.$fileName));
     }
 
+    public function playGame($id){
+        return view('game')->with('id', $id);
+    }
+
     public function index()
     {
         return view('index');

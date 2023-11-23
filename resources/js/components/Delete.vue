@@ -1,11 +1,16 @@
 <script>
 export default {
-    name: "Message"
+    name: "Message",
+    methods:{
+        deleteEvent(){
+            this.$emit('delete-event');
+        }
+    }
 }
 </script>
 
 <template>
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal fade text-color" id="deleteModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -17,8 +22,7 @@ export default {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
-                    <!-- Add delete button -->
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteEvent">Delete</button>
                 </div>
             </div>
         </div>

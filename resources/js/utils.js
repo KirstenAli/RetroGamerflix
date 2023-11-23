@@ -1,3 +1,25 @@
+const newElement = document.createElement('div');
+newElement.innerHTML = `<div class="modal fade text-color" id="message-modal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Delete Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="message-modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ok</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+document.body.appendChild(newElement);
+
+const messageModal= initModal('message-modal');
+
+
 export async function fetchJSON(url) {
     try {
         const response = await fetch(url);
@@ -12,29 +34,44 @@ export async function fetchJSON(url) {
     }
 }
 
-export async function sendData(url, verb, headers) {
+export async function sendData(url, verb, showMessage, data, headers) {
     try {
-        let response = await fetch(url, {
-            method: verb,
-            headers: headers,
-        });
+        const response = await fetch(url, { method: verb, headers, body: data });
 
         if (!response.ok) {
-            console.log(response.status);
-            return response.status;
+            if(showMessage){
+                showModal(response.status);
+            }
         }
 
-        response = await response.json();
+        const { message, game } = await response.json();
 
-        if(response.message) {
-            console.log();
-            return response.message;
+        if (message) {
+            if(showMessage){
+                showModal(message);
+            }
         }
-        return response;
 
+        if (game) {
+            return game;
+        }
 
+        return message;
     } catch (error) {
+        if(showMessage){
+            showModal('An Error has Occurred');
+        }
         console.error('Error:', error.message);
-        return error.message;
     }
 }
+
+function showModal(message){
+    const element = document.getElementById('message-modal-body');
+    element.innerHTML = message;
+    messageModal.show();
+}
+
+export function initModal(id){
+    return new bootstrap.Modal(document.getElementById(id), {backdrop: 'static'});
+}
+

@@ -16,6 +16,7 @@ export default {
 
         addToRecentlyPlayed(game) {
             this.$emit('add-to-recently-played-event', game);
+            window.open(`/game/playGame/${game.id}`, '_blank');
         }
     }
 }
@@ -40,7 +41,7 @@ export default {
 <style scoped>
 
 .netflix-card {
-    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('game1.jpg') center/cover;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8));
     color: white;
     border: none;
     border-radius: 10px;

@@ -16,13 +16,18 @@ class AdminGameController extends Controller
         return response()->json(['message' => 'Game created successfully', 'game' => $game]);
     }
 
-    public function update(Game $game, GameRequest $request)
+    public function update(GameRequest $request)
     {
         $validatedData = $this->processGameRequest($request);
+        $game = Game::find($validatedData['id']);
+
+        if (!$game) {
+            return response()->json(['message' => 'Game not found']);
+        }
 
         $game->update($validatedData);
 
-        return response()->json(['message' => 'Game updated successfully']);
+        return response()->json(['message' => 'Game updated successfully', 'game' => $game]);
     }
 
     public function destroy(Game $game)
@@ -62,11 +67,14 @@ class AdminGameController extends Controller
     private function processFileKey(&$validatedData, $key, $value){
         if($value){
             $validatedData[$key] = $value;
-        } else{
-            unset($validatedData[$key]);
         }
     }
-    
+
+    public function getGenres()
+    {
+        return Game::distinct()->pluck('genre');
+    }
+
     public function adminPanel(){
         return view('adminPanel');
     }
