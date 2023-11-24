@@ -6,8 +6,8 @@ export default {
 
 <template>
     <div class="jumbotron position-relative">
-        <img src="/game/thumbnail/5" alt="Game Cover Image" class="banner-img">
-        <a href="#" class="btn btn-primary netflix-btn"><i class="bi bi-play-circle-fill"></i> Play Now</a>
+        <img src="/mainBanner" alt="Game Cover Image" class="banner-img">
+        <a href="/game/playGame/Pokemon Red (UE) [S][!].gb" target="_blank" class="btn btn-primary netflix-btn"><i class="bi bi-play-circle-fill"></i> Play Now</a>
     </div>
 </template>
 

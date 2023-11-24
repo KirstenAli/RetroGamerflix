@@ -61,14 +61,14 @@ class GameController extends Controller
         return ['message' => 'Game removed from recently played'];
     }
 
-    public function getThumbnail(Game $game)
+    public function getThumbnail($fileName)
     {
-        return $this->getFile($game, 'thumbnail');
+        return $this->getFile($fileName, 'thumbnails');
     }
 
-    public function getRom(Game $game)
+    public function getRom($fileName)
     {
-        return $this->getFile($game, 'rom');
+        return $this->getFile($fileName, 'roms');
     }
 
     public function getAllGamesContain($str)
@@ -77,18 +77,32 @@ class GameController extends Controller
         return $games;
     }
 
-    private function getFile(Game $game, $field)
+    private function getFile($fileName,$directory)
     {
-        $fileName = $game->{$field};
-        return response()->file(Storage::disk('public')->path($field.'s/'.$fileName));
+        return response()->file(Storage::disk('public')->path($directory.'/'.$fileName));
     }
 
-    public function playGame($id){
-        return view('game')->with('id', $id);
+    public function playGame($fileName){
+        return view('game')->with('fileName', $fileName);
     }
 
     public function index()
     {
         return view('index');
+    }
+
+    public function mainBanner()
+    {
+        return $this->getFile('mainBanner.jpg', 'banners');
+    }
+
+    public function logo()
+    {
+        return $this->getFile('logo.png', 'logos');
+    }
+
+    public function welcomeAudio()
+    {
+        return $this->getFile('audioTheme.mp3', 'audio');
     }
 }

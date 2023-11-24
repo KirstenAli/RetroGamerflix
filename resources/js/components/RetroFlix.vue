@@ -4,7 +4,8 @@ import BannerComponent from "@/components/BannerComponent.vue";
 import * as utils from "../utils.js";
 
 const favKey = 'Favorites';
-const recentKey = 'Recently Played';
+const recentKey = 'Continue Playing...';
+let becauseYouWatched = 'Because You Played '
 export default {
     name: "RetroFlix",
     components: {BannerComponent},
@@ -14,6 +15,7 @@ export default {
             categories: [],
             favoritesTracker: {},
             recentlyPlayedTracker: {},
+            pageLoaded: false
         };
     },
 
@@ -36,19 +38,22 @@ export default {
         },
 
         async addToCategory(game, tracker, categoryName, categories, endpoint) {
-            const response = await utils.sendData(endpoint, 'PUT', false);
 
-            if(!tracker.has(game.id) && response) {
+            if(!tracker.has(game.id)) {
 
-                const gameChunks = categories.get(categoryName);
-                const lastChunk = gameChunks[gameChunks.length - 1];
+                const response = await utils.sendData(endpoint, 'PUT', false);
 
-                if (lastChunk && lastChunk.length < 3)
-                    lastChunk.push(game);
-                else
-                    gameChunks.push([game]);
+                if(response) {
+                    const gameChunks = categories.get(categoryName);
+                    const lastChunk = gameChunks[gameChunks.length - 1];
 
-                buildCatMap(tracker, gameChunks, gameChunks.length - 1);
+                    if (lastChunk && lastChunk.length < 3)
+                        lastChunk.push(game);
+                    else
+                        gameChunks.push([game]);
+
+                    buildCatMap(tracker, gameChunks, gameChunks.length - 1);
+                }
             }
         },
 
@@ -110,18 +115,37 @@ export default {
 
     async mounted() {
         const [gameObjects, favorites, recentlyPlayed] = await this.fetchData();
+        becauseYouWatched+=getTitleOfLastPlayedGame(recentlyPlayed);
 
         const chunkSize = 3;
 
         const gameMap = new Map([
             [recentKey, []],
+            [becauseYouWatched, []],
             [favKey, []]]);
 
         this.categories = chunkGames(gameObjects, chunkSize, gameMap);
 
         this.favoritesTracker = this.initializeTracker(gameMap, favorites, favKey, chunkSize);
         this.recentlyPlayedTracker = this.initializeTracker(gameMap, recentlyPlayed, recentKey, chunkSize);
+        generateRecommendations(recentlyPlayed, this.categories);
     }
+}
+
+function getTitleOfLastPlayedGame(recentlyPlayedGames){
+    if(recentlyPlayedGames.length !==0)
+        return getLastElement(recentlyPlayedGames).title;
+}
+
+function generateRecommendations(recentlyPlayedGames, categories){
+    if(recentlyPlayedGames.length !==0) {
+        const lastGenre = getLastElement(recentlyPlayedGames).genre;
+        categories.set(becauseYouWatched, categories.get(lastGenre));
+    }
+}
+
+function getLastElement(array){
+    return array[array.length-1];
 }
 
 function prevCarousel(id){
@@ -187,13 +211,14 @@ function mapGameLocations(map, nestedArray, startPos){
 </script>
 
 <template >
-    <banner-component></banner-component>
-    <div class="container mt-4 games-container">
-        <div v-for="[key, value] in categories" :key="key" >
-            <category-component :cat-key="key" :cat-value="value" :recentlyPlayed="recentlyPlayed" :isFavorite="isFavorite" @toggle-heart-event="toggleHeart" @remove-recently-played-event="removeRecentlyPlayed" @add-to-recently-played-event="addToRecentlyPlayed"></category-component>
+    <div>
+        <banner-component></banner-component>
+        <div class="container mt-4 games-container">
+            <div v-for="[key, value] in categories" :key="key" >
+                <category-component :cat-key="key" :cat-value="value" :recentlyPlayed="recentlyPlayed" :isFavorite="isFavorite" @toggle-heart-event="toggleHeart" @remove-recently-played-event="removeRecentlyPlayed" @add-to-recently-played-event="addToRecentlyPlayed"></category-component>
+            </div>
         </div>
     </div>
-
 </template>
 
 <style scoped>
@@ -202,5 +227,4 @@ function mapGameLocations(map, nestedArray, startPos){
         margin-top: -100px !important;
         opacity: 0.8;
     }
-
 </style>

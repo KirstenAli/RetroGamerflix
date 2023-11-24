@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Game>
@@ -23,8 +25,14 @@ class GameFactory extends Factory
 
     private array $gameDescriptions  = [];
 
-    public function __construct($count = null, ?Collection $states = null, ?Collection $has = null, ?Collection $for = null, ?Collection $afterMaking = null, ?Collection $afterCreating = null, $connection = null, ?Collection $recycle = null)
-    {
+    public function __construct($count = null,
+                                ?Collection $states = null,
+                                ?Collection $has = null,
+                                ?Collection $for = null,
+                                ?Collection $afterMaking = null,
+                                ?Collection $afterCreating = null,
+                                $connection = null,
+                                ?Collection $recycle = null){
         parent::__construct($count, $states, $has, $for, $afterMaking, $afterCreating, $connection, $recycle);
         $this->init();
     }
@@ -42,8 +50,8 @@ class GameFactory extends Factory
 
     public function init(): void
     {
-        $this->thumbnails = $this->getFilesFromDir('../../storage/app/public/thumbnails/*');
-        $this->roms = $this->getFilesFromDir('../../storage/app/public/roms/*');
+        $this->thumbnails = $this->getFilesFromDir('../thumbnails/*');
+        $this->roms = $this->getFilesFromDir('../roms/*');
 
         $this->genres = [
             'Action',

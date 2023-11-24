@@ -2,7 +2,7 @@
 import * as utils from "../utils.js";
 export default {
     name: "UploadForm",
-    props:['game', 'formName', 'url', 'genres'],
+    props:['game', 'formName', 'url', 'genres', 'submitName'],
 
     methods:{
         async postForm(url, formName) {
@@ -45,7 +45,7 @@ export default {
             <input type="file" class="form-control" id="gameImage" name="thumbnail">
             <span class="text-primary">{{game.thumbnail}}</span>
         </div>
-        <button type="button" class="btn btn-primary netflix-btn" @click="postForm(url,formName)">Add Game</button>
+        <button type="button" class="btn btn-primary netflix-btn" @click="postForm(url,formName)">{{submitName}}</button>
     </form>
 
 </template>

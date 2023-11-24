@@ -16,7 +16,7 @@ export default {
 
         addToRecentlyPlayed(game) {
             this.$emit('add-to-recently-played-event', game);
-            window.open(`/game/playGame/${game.id}`, '_blank');
+            window.open(`/game/playGame/${game.rom}`, '_blank');
         }
     }
 }
@@ -25,7 +25,7 @@ export default {
 
 <template>
     <div class="card netflix-card">
-        <img :src="`/game/thumbnail/${game.id}`" class="card-img-top" alt="Game 1">
+        <img :src="`/game/thumbnail/${game.thumbnail}`" class="card-img-top" alt="Game 1">
         <div class="card-body">
             <h5 class="card-title">{{game.title}}</h5>
             <p class="card-text">{{game.description}}</p>

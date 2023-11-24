@@ -28,7 +28,7 @@
     </div>
     <script>
       const customControls = {}
-      const ROM_FILENAME = "/game/rom/{{$id}}";
+      const ROM_FILENAME = "/game/rom/{{$fileName}}";
     </script>
 
     <script src="{{ asset('web/binjgb.js') }}"></script>

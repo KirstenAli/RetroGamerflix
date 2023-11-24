@@ -29,11 +29,12 @@ Route::middleware(['auth'])->prefix('/game')->group(function () {
     Route::delete('/removeFavorite/{game}', [GameController::class, 'removeFavorite']);
     Route::put('/addRecentlyPlayed/{game}', [GameController::class, 'addRecentlyPlayed']);
     Route::delete('/removeRecentlyPlayed/{game}', [GameController::class, 'removeRecentlyPlayed']);
-    Route::get('/rom/{game}', [GameController::class, 'getRom']);
+    Route::get('/rom/{fileName}', [GameController::class, 'getRom']);
     Route::get('/contain/{str}', [GameController::class, 'getAllGamesContain']);
-    Route::get('/thumbnail/{game}', [GameController::class, 'getThumbnail']);
-    Route::get('/index', [GameController::class, 'index']);
+    Route::get('/thumbnail/{fileName}', [GameController::class, 'getThumbnail']);
+    Route::get('/index', [GameController::class, 'index'])->name('index');
     Route::get('/playGame/{game}', [GameController::class, 'playGame']);
+    Route::get('/welcomeAudio', [GameController::class, 'welcomeAudio']);
 });
 
 Route::middleware(['auth', 'admin'])->prefix('/admin/game')->group(function () {
@@ -44,6 +45,8 @@ Route::middleware(['auth', 'admin'])->prefix('/admin/game')->group(function () {
     Route::get('/genres', [AdminGameController::class, 'getGenres']);
 });
 
+Route::get('/logo', [GameController::class, 'logo']);
+Route::get('/mainBanner', [GameController::class, 'mainBanner']);
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

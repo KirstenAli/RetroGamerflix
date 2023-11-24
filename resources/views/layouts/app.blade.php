@@ -76,6 +76,14 @@
         .bi-person-fill{
             font-size: xx-large;
         }
+
+        .centered-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
     </style>
 
 </head>
@@ -84,14 +92,16 @@
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top custom-nav">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="/game/thumbnail/17" alt="Logo" style="width: 200px;">
+                <img src="/logo" alt="Logo" style="width: 200px;">
             </a>
-            @auth
+
+                @auth
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav w-100 align-items-center">
+                        @if(Route::currentRouteName() ==='index')
                         <li class="nav-item">
                             <a class="nav-link" href="#Action">Action</a>
                         </li>
@@ -101,7 +111,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#Puzzle">Puzzle</a>
                         </li>
-
+                        @endif
                         <li class="nav-item dropdown ms-auto">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Hello, {{ Auth::user()->name }} <i class="bi bi-person-fill"></i>
@@ -116,7 +126,7 @@
                         </li>
                     </ul>
                 </div>
-            @endauth
+                @endauth
         </div>
     </nav>
 
@@ -124,5 +134,32 @@
         @yield('content')
     </main>
 </div>
+
+@if(!in_array(Route::currentRouteName(),$routes))
+<div id="logo-screen">
+    <img src="/logo" class="centered-logo" alt="logo">
+</div>
+
+<audio id="myAudio">
+    <source src="/game/welcomeAudio" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<script>
+    $('#app').addClass('d-none');
+    $("#logo-screen").fadeIn(1000);
+
+    window.onload = ()=>{
+        $("#logo-screen").fadeOut(3500, ()=>{
+            $('#app').removeClass('d-none');
+            const audio = document.getElementById('myAudio');
+            audio.play();
+        });
+    }
+</script>
+
+@endif
 </body>
 </html>

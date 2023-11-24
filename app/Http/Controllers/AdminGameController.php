@@ -11,10 +11,19 @@ class AdminGameController extends Controller
     {
         $validatedData = $this->processGameRequest($request);
 
+        $title = $validatedData['title'];
+
+        $existingGame = Game::where('title', $title)->exists();
+
+        if ($existingGame) {
+            return response()->json(['message' => 'Game with this title already exists'], 422);
+        }
+
         $game = Game::create($validatedData);
 
         return response()->json(['message' => 'Game created successfully', 'game' => $game]);
     }
+
 
     public function update(GameRequest $request)
     {

@@ -9,13 +9,15 @@ export default {
         return{
             games:[],
             newGame: {id:0},
-            genres:[]
+            genres:[],
+            searchQuery: ''
         }
     },
 
     methods:{
         addNewGame(game){
-            this.games.push(game);
+            if(game.title)
+                this.games.push(game);
         },
 
         async deleteGame(gamePos) {
@@ -25,7 +27,22 @@ export default {
 
             if(response)
                 this.games.splice(gamePos, 1);
+        },
+
+        setQuery(query){
+            this.searchQuery = query;
         }
+    },
+
+    computed:{
+        filterGames(){
+            return this.searchQuery ?
+                this.games.filter(game =>
+                    game.title
+                        .toLowerCase()
+                        .includes(this.searchQuery.toLowerCase()))
+                : this.games;
+        },
     },
 
     async mounted() {
@@ -50,13 +67,13 @@ export default {
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="card-body padding">
-                        <upload-form @post-event="addNewGame" :game="newGame" :genres="genres" formName="addForm" url="/admin/game/store"></upload-form>
+                        <upload-form @post-event="addNewGame" :game="newGame" :genres="genres" formName="addForm" submitName="Add Game" url="/admin/game/store"></upload-form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <game-table :games="games" :genres="genres" @delete-event="deleteGame"></game-table>
+        <game-table :games="filterGames" :genres="genres" @delete-event="deleteGame" @search-event="setQuery"></game-table>
 
     </div>
 
